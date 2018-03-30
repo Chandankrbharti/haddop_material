@@ -1,0 +1,245 @@
+Installing SBT::
+**********************************
+How to Run the sample Spark Application.
+
+First of all, on your cloudera VM, install SBT tool by following the commands below
+
+Download sbt by typing
+wget http://dl.bintray.com/sbt/rpm/sbt-0.13.8.rpm
+
+Install by typing
+
+sudo yum localinstall sbt-0.13.8.rpm
+
+************************************************
+
+
+
+
+How to Create an SPARK APPLICATION using SBT
+*****************************************
+SBT IS ALREADY INSTALLED ON THE MACHINE::
+>>> pwd
+/home/clodera
+
+
+>> mkdir nov4
+
+>>>cd nov4
+
+>> mkdir HelloSpark
+>>> cd HelloSpark
+// now To create the Spark Application we need to create SBT file
+
+>>> vi build.sbt
+// paste the content
+
+name := "HelloSpark"
+
+version := "1.0"
+scalaVersion := "2.10.6"
+libraryDependencies += "org.apache.spark" % "spark-core_2.10" % "1.6.0"
+
+// save and Exit
+
+
+
+>>mkdir -p src/main/scala
+
+
+Now We want to create  Soure file:::
+
+ ..... 
+ >>>> vi src/main/scala/HelloSpark.scala
+ 
+ // Paste
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+import org.apache.spark.SparkConf
+
+object HelloSpark {
+  def main(args: Array[String]) {
+  val sc = new SparkContext()
+    println("Spark Contect Created")
+	val data=sc.parallelize(1 to 100)
+	println(data.count)
+	sc.stop()
+	println("Application Completed")
+  }
+}
+ 
+
+
+ 
+ ////  Now Create it like a Package::
+ 
+ >>>>>sbt package
+ 
+ >>>>>ls
+ >>> cd target
+ >>ls
+ >>>>cd scala-2.10.0
+ >>>ls
+ Here JAR file will be there::
+ 
+ >>>>  To Run the JAR file::
+ 
+ >>>$$$$>>>>> spark-submit --class HelloSpark jarname
+ 
+ <>>>>>>>>>>spark-submit --class HelloSpark hellospark_2.10-1.0.jar
+ 
+ ***************************************************************************
+ REference::
+ Now, copy the Hello SparkAPP to any folder on the VM
+
+Type the following command to build the JAR
+
+sbt package--------->This has to be typed from within the Hello SparkAPP folder
+
+It will create a target folder and inside that another scala folder. The JAR will be inside this scala folder.
+
+Navigate to JAR location and type the following command to run spark in local mode
+
+spark-submit --class HelloSpark <JAR FILE NAME>
+
+To run Spark in client mode, modify the .scala file and remove .setMaster("local") 
+
+Run by typing
+
+spark-submit --class HelloSpark --master spark://localhost.localdomain:7077 --deploy-mode client <JAR>
+
+Check the result in browser by typing localhost:8080
+ 
+ 
+ **********************************************************************
+ *************************************************************************
+ 
+ EX2:::  ERROR CHECK
+ 
+ >> mkdir nov5
+
+>>>cd nov5
+
+>> mkdir HelloSpark2
+
+>>>cd HelloSpark2
+
+>>mkdir -p src/main/scala
+
+// now To create the Spark Application we need to create SBT file
+
+>>> vi build.sbt
+// paste the content
+
+name := "HelloSpark"
+
+version := "1.0"
+scalaVersion := "2.10.6"
+libraryDependencies += "org.apache.spark" % "spark-core_2.10" % "1.6.0"
+
+// save and Exit
+
+Now We want to create  Soure file:::
+
+ ..... 
+ >>>> vi src/main/scala/HelloSpark.scala
+ 
+ // Paste
+
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+import org.apache.spark.SparkConf
+
+object HelloSpark {
+  def main(args: Array[String]) {
+  if (arg.length<3)
+  {
+  println("Pls providre the 3 argument")
+  return
+  }
+   val conf = new SparkConf().setMaster(arg(0)).setAppName(arg(1)).set("spark.submit.deployMode"(arg(2)))
+    val sc = new SparkContext(conf)
+    println("Spark Contect Created")
+	val data=sc.parallelize(1 to 100)
+	println(data.count)
+	sc.stop()
+	println("Application Completed")
+  }
+}
+ 
+
+ 
+ ////  Now Cre
+ 
+ *********************************************************************************
+ Ex--3::  ERROR  Check
+ 
+ >> mkdir nov6
+
+>>>cd nov5
+
+>> mkdir HelloSpark
+
+>>>cd HelloSpark
+
+>>mkdir -p src/main/scala
+
+// now To create the Spark Application we need to create SBT file
+
+>>> vi build.sbt
+// paste the content
+name := "Hello SparkApp"
+
+version := "1.0"
+
+scalaVersion := "2.10.6"
+
+libraryDependencies += "org.apache.spark" %% "spark-core" % "1.6.0"
+
+// save and Exit
+
+Now We want to create  Soure file:::
+
+ ..... 
+ >>>> vi src/main/scala/HelloSpark.scala
+ 
+ // Paste
+
+ 
+ 
+ 
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+import org.apache.spark.SparkConf
+
+object HelloSpark {
+  def main(args: Array[String]) {
+    val logFile = "file:///home/cloudera/Desktop/customer_data.txt" // Should be some file on your system
+    //val logFile = "hdfs://quickstart.cloudera:8020/user/cloudera/book.txt"
+    val conf = new SparkConf().setAppName("Simple Application")
+    val sc = new SparkContext(conf)
+    val logData = sc.textFile(logFile)
+    val numAs = logData.filter(line => line.contains("a")).count()
+    val numBs = logData.filter(line => line.contains("b")).count()
+    println("Lines with a: %s, Lines with b: %s".format(numAs, numBs))
+  }
+}
+
+**********
+////  Now Create it like a Package::
+ 
+ >>>>>sbt package
+ 
+ >>>>>ls
+ >>> cd target
+ >>ls
+ >>>>cd scala-2.10.0
+ >>>ls
+ Here JAR file will be there::
+ 
+ >>>>  To Run the JAR file::
+ 
+ >>>$$$$>>>>> spark-submit --class HelloSpark jarname
+ 
+ <>>>>>>>>>>spark-submit --class HelloSpark hellospark_2.10-1.0.jar
+ 

@@ -1,0 +1,137 @@
+//creating Dataframe from Sequence
+
+//example 1:
+ val data = sc.parallelize(1 to 10)
+ val df1 = data.map(i => (i,i*2)).toDF("single","double")
+ df1.show
+ df1.printSchema
+ //////////////// IF we don't Create toDF then::
+
+val df2 = list.map(i => (i,i*2))
+ df2.show
+df2.printSchema
+ 
+**********************************************************************************************************************************************************************************************************
+//example 2:
+val a = List(("ironman",3),("kabali",2),("bhahubali",5))
+val rating = a.toDF("movie","rating")
+
+rating.show
+rating.printSchema
+
+***********************************
+***********************************
+//example 3
+
+import org.apache.spark.sql.DataFrame
+
+val df = Seq(("Yoda","Obi-Wan Kenobi"),("Anakin Skywalker", "Sheev Palpatine"),("Luke Skywalker","Han Solo, Leia Skywalker"),("Leia Skywalker","Obi-Wan Kenobi"),("Sheev Palpatine",  "Anakin Skywalker"),("Han Solo","Leia Skywalker, Luke kywalker, Obi-Wan Kenobi, Chewbacca"),("Obi-Wan Kenobi","Yoda, Qui-Gon Jinn"),("R2-D2","C-3PO"),("C-3PO","R2-D2"),("Darth Maul","Sheev Palpatine"),("Chewbacca","Han Solo"),("Lando Calrissian", "Han Solo"), ("Jabba","Boba Fett")).toDF("name", "friends")
+
+df.show
+
+//Running Queries on top of Dataframe (((( store the table as a TEMPORARY TABLE )))
+
+//example 2:
+val a = List(("ironman",3),("kabali",2),("bhahubali",5))
+val rating = a.toDF("movie","rating")
+
+rating.show
+rating.printSchema
+
+rating.registerTempTable("ratings")
+
+sqlContext.sql("select * from ratings where rating > 4").show
+*********************************************************************
+
+***********************************************************************************************************************************************************************************************************
+//create dataframe using struct
+//example 5
+
+import org.apache.spark.sql.{SQLContext,Row}
+import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
+
+val schema = StructType(Array(StructField("name",StringType,true),StructField("age",IntegerType,true)))
+val data = sc.parallelize( Seq("john","Adom","Smith")).map(x => (x,20+x.length))
+val rowRDD = data.map(x => Row(x._1,x._2))
+val df = sqlContext.createDataFrame(rowRDD,schema)
+df.registerTempTable("people")
+sqlContext.sql("select * from people").show
+
+
+//restart your spark shell using this arguments 
+
+ spark-shell --packages com.databricks:spark-csv_2.10:1.5.0
+ 
+ val characters_df = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").option("inferSchema", "true").option("delimiter", ",").load("/user/cloudera/spark-input/StarWars.csv")
+ 
+ characters_df.show
+ 
+ //dealing with null and empty values
+ 
+ val filterdata = characters_df.filter(characters_df("haircolor") !== "")
+ val changedata = characters_df.filter(characters_df("haircolor") === null || characters_df("haircolor") === "").withColumn("haircolor",lit("some color"))
+
+
+ filterdata.unionAll(changedata).show
+
+
+********************************************************************************************************************************************************************************************************
+
+*********************************************************************
+//creating dataframe using case class
+//example 4
+import org.apache.spark.sql.DataFrame
+val yahoo_stocks=sc.textFile("/user/cloudera/spark-input/yahoo_stocks.csv")
+val header =yahoo_stocks.first
+
+val data =yahoo_stocks.filter(_ != header)
+
+case class YahooStockPrice(date:String, open:Float, high:Float, low:Float, close:Float, volume:Integer,adjClose:Float)
+
+val stockprice=data.map(_.split(",")).map(row =>YahooStockPrice(row(0), row(1).trim.toFloat, row(2).trim.toFloat, row(3).trim.toFloat, row(4).trim.toFloat, row(5).trim.toInt, row(6).trim.toFloat)).toDF()
+
+stockprice.show()
+stockprice.printSchema
+stockprice.registerTempTable("yahoo_stocks_temp") 
+
+val results =sqlContext.sql("SELECT * FROM yahoo_stocks_temp")
+
+
+results.map(t => "Stock Entry:" +t.toString).collect().foreach(println)
+************************************************************************************************8
+***************************************************************************************************************
+EBAY EX::
+
+import org.apache.spark.sql.types.{StringType, StructField, StructType}
+
+val schema = StructType(Array(StructField("auctionid", StringType, false),StructField("bid", StringType, false),StructField("bidder", StringType, false),StructField("bidderrate", StringType, false),StructField("openbid", StringType, false),StructField("price", StringType, false),StructField("item", StringType, false),StructField("daystolive", StringType, false)))
+
+
+
+val ebay_df = sqlContext.read.format("com.databricks.spark.csv").option("header", "false").option("inferSchema", "true").option("delimiter", ",").schema(schema).load("/user/cloudera/spark-input/ebay.csv")
+
+
+ebay_df.registerTempTable("ebay")
+
+********
+1.How many auctions were held?
+
+sqlContext.sql("select count(distinct(auctionid)) from ebay").show
+
+2.How many bids per item
+
+sqlContext.sql("select auctionid,item,count(*) from ebay group by auctionid,item").show
+
+3. What's the min number of bids per item? what's the average? what's the max?
+
+sqlContext.sql("select min(a.count) as min ,max(a.count) as max ,avg(a.count)as avg from (select auctionid,item,count(*) as count from ebay group by auctionid,item ) as a ").show
+
+
+4.Get the auctions with closing price > 100
+
+sqlContext.sql("select * from ebay where cast(price as int)>100").show
+
+
+
+
+ 

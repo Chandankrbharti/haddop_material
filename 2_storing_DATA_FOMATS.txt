@@ -1,0 +1,104 @@
+Dealing with JSON files
+
+*****************
+
+>>>  ////////////sqlContext.read.json
+>>> val people = sqlContext.jsonFile("/user/cloudera/spark-input/people.json")
+
+>>>  people.registerTempTable("persons")
+
+>> sqlContext.sql("select * from persons").show
+
+***************
+Nested Json column file:::
+This json file having nested columns in it. For example address table can nested  in employees table
+
+>> val employees_df = sqlContext.read.json("/user/cloudera/datasets/employee.json")
+>> employees_df.registerTempTable("employees")
+ >> sqlContext.sql("select id,name,salary,address.city,address.country from employees").show
+
+
+EX2::: LOADNG PARQUET DATA :::
+
+
+>>>>>>>> val data = sqlContext.read.parquet("/user/cloudera/spark-input/baby_names.parquet")
+
+scala> data.printSchema
+
+scala> data.printSchema
+root
+ |-- year: integer (nullable = true)
+ |-- name: string (nullable = true)
+ |-- prob: float (nullable = true)
+ |-- sex: string (nullable = true)
+
+
+scala> data.select ("year","name","prob","sex").show
+
+>>>>>>>>data.select ("year","name","prob").show
+
+STORING THIS IN JSON FORMAT ::::
+>>>>>>> data.write.format("json").save("/user/cloudera/expspark/")
+
+********* To store in ORC format ::
+>>>>>>> data.write.format("orc").save("/user/cloudera/exporc/")
+
+************************************************************************************************************************************************************************************************
+Dealing with XML files
+
+//Reading JSON Files
+
+//example 1 simple json
+val persons = sqlContext.read.json("/user/cloudera/datasets/persons.json")
+persons.registerTempTable("persons")
+sqlContext.sql("select * from persons").show
+
+//example2
+//nested JSON
+
+val employees_df = sqlContext.read.json("/user/cloudera/datasets/employee.json")
+employees_df.registerTempTable("employees")
+sqlContext.sql("select id,name,salary,address.city,address.country from employees").show
+
+
+//dealing xml files
+
+//to read xml files you need to restart your spark-shell with the below given arguments
+spark-shell --packages com.databricks:spark-xml_2.10:0.4.1
+
+val employees_df = sqlContext.read.format("com.databricks.spark.xml").option("inferSchema", "true").option("rootTag","employees").option("rowTag","employee").load("/user/cloudera/spark-input/employees.xml")
+
+val emp_dataNormal = employees_df.select("emp_no","emp_name","address.city","address.country","address.pincode","salary","dept_no").show
+
+
+//dealing parquet files
+val baby_names_df = sqlContext.read.parquet("/user/cloudera/datasets/baby_names.parquet")
+baby_names_df.show
+baby_names_df.write.json("/user/cloudera/parquet-to-json")
+
+val prop = new java.util.Properties
+prop.put("user","root")
+prop.put("password","cloudera")
+prop.put("driverClass","com.mysql.jdbc.Driver")
+val uri ="jdbc:mysql://localhost:3306/retail_db"
+val table = "customers"
+val empDF = sqlContext.read.jdbc(uri,table,prop)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

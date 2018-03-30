@@ -1,0 +1,28 @@
+How to Run the sample Spark Application.
+
+First of all, on your cloudera VM, install SBT tool by following the commands below
+
+Download sbt by typing
+wget http://dl.bintray.com/sbt/rpm/sbt-0.13.8.rpm
+Install by typing
+sudo yum localinstall sbt-0.13.8.rpm
+
+Now, copy the Hello SparkAPP to any folder on the VM
+
+Type the following command to build the JAR
+
+sbt package--------->This has to be typed from within the Hello SparkAPP folder
+
+It will create a target folder and inside that another scala folder. The JAR will be inside this scala folder.
+
+Navigate to JAR location and type the following command to run spark in local mode
+
+spark-submit --class HelloSpark <JAR FILE NAME>
+
+To run Spark in client mode, modify the .scala file and remove .setMaster("local") 
+
+Run by typing
+
+spark-submit --class HelloSpark --master spark://localhost.localdomain:7077 --deploy-mode client <JAR>
+
+Check the result in browser by typing localhost:8080

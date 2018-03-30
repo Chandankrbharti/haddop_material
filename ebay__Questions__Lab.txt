@@ -1,0 +1,200 @@
+1) See 1st element of RDD
+2) First five element of RDD
+3) What is the total no of Bids 
+4) What is total no of Distinct items that were auctioned.
+
+5) What is the Total no items that were    auctioned..
+
+***************
+[cloudera@quickstart ~]$ spark-shell
+
+scala > val auctionRDD= sc.textFile ("/user/cloudera/spark-input/ebay.csv")
+
+ for Comma Seperated values ::
+ 
+scala > val auctionRDD= sc.textFile ("/user/cloudera/spark-input/ebay.csv").map(_.split(","))
+
+
+scala> auctionRDD.first
+scala> auctionRDD.take(5)
+
+
+scala> println(auctionRDD.count())
+
+
+4)    Create Reference for each Fields ::
+ > val auctionid=0
+
+
+scala> val auctionid=0
+auctionid: Int = 0
+
+scala> val bid=1
+bid: Int = 1
+
+scala> val bidtime=2
+bidtime: Int = 2
+
+scala> val bidder=3
+bidder: Int = 3
+
+scala> val bidrate=4
+bidrate: Int = 4
+
+scala> val openbid=5
+openbid: Int = 5
+
+scala> val price=6
+price: Int = 6
+
+scala> val itemtype=7
+itemtype: Int = 7
+
+scala> val daystolive=8
+daystolive: Int = 8
+
+scala> 
+
+> println (auctionRDD.map(_(auctionid)).distinct().count())
+
+
+> println (auctionRDD.map(_(itemtype)).distinct().count())
+
+******************************************************************************************************BABY NAMES proj:::
+******************************************************************************************************
+  >   val babynamesRDD= sc.textFile ("/user/cloudera/spark-input/baby-names.csv").map(_.split(","))
+
+  scala> babynamesRDD.first
+scala> babynamesRDD.take(5)
+
+*********  How to extrat Yr  as a Key and  names as a Value::
+
+ > val babyname= sc.textFile ("/user/cloudera/spark-input/baby-names.csv").map(_.split(",")).map(r=>(r(0),r(1)))
+
+scala> babyname.take(5)
+
+******************************************************************************************************:REDUCE by Keys  ::: Find Baby Born Every Yr 
+******************************************************************************************************
+ > val baby_born_yr= sc.textFile ("/user/cloudera/spark-input/baby-names.csv").map(_.split(",")).map(r=>(r(0),1)).reduceByKey(_+_)
+
+> baby_born_yr.collect
+
+******************************************************************************************************:Sort by Keys  :::
+******************************************************************************************************
+ scala >  val baby_names= sc.textFile ("/user/cloudera/spark-input/baby-names.csv").map(_.split          (",")).map(r=>(r(0),r(1)))
+
+
+> baby_names.collect
+
+  scala> baby_names.sortByKey(false).collect
+
+scala> baby_names.sortByKey().collect
+
+
+******************************************************************************************************:Count by Keys  :::
+******************************************************************************************************
+ scala >  val baby_per_year= sc.textFile ("/user/cloudera/spark-input/baby-names.csv").map(r=>(r(0),1)).countByKey()
+
+**********
+>>>  val baby_names= sc.textFile ("/user/cloudera/spark-input/baby-names.csv").map(_.split          (",")).map(r=>(r(0),r(1)))
+
+>>> baby_names.keys.collect
+
+>>> baby_names.keys.distinct().collect
+
+>>> baby_names.values.collect
+>>> baby_names.keys.distinct().collect
+
+******************************************************************************************************:To See the ALL DATA :::::
+**>>>   baby_names.values.distinct().foreach(println)
+
+>>>>>>>>baby_names.keys.distinct().foreach(println)
+
+
+********  oN brower Check::::::::::  quickstart.cloudera:4040/jobs
+
+
+******************************************************************************************************Take 2 Pair RDD ::
+
+******************************************************************************************************
+ val a =sc.parallelize (List("SPARK","SCALA","PYTHON")).map(e=>(e,1))
+ val b =sc.parallelize (List("SPARK","SCALA","java")).map(e=>(e,1))
+
+JOIN::: 
+>>> a.join(b).collect
+
+Left Outer JOIN::
+ >>> >>> a.leftOuterJoin(b).collect
+Right Outer JOIN::
+>>> a.rightOuterJoin(b).collect
+
+************************
+EBAY Example ::::::::
+
+6) What is the total no of bids per item Type
+7) What is the total no of bids per auctions
+8) Across all auctioned items what is the maximum no of Bids
+9) Across all auctioned items what is the minimum no of Bids
+10 ) What is the average bid...
+
+scala > val auctionRDD= sc.textFile ("/user/cloudera/spark-input/ebay.csv").map(_.split(","))
+
+
+scala> auctionRDD.first
+scala> auctionRDD.take(5)
+scala> auctionRDD.count
+
+6) What is the total no of bids per item Type
+
+scala> val auctionid=0
+auctionid: Int = 0
+
+scala> val bid=1
+bid: Int = 1
+
+scala> val bidtime=2
+bidtime: Int = 2
+
+scala> val bidder=3
+bidder: Int = 3
+
+scala> val bidrate=4
+bidrate: Int = 4
+
+scala> val openbid=5
+openbid: Int = 5
+
+scala> val price=6
+price: Int = 6
+
+scala> val itemtype=7
+itemtype: Int = 7
+
+scala> val daystolive=8
+daystolive: Int = 8
+
+scala> val bids_itemtype = auctionRDD.map(x=>(x(itemtype),1)).reduceByKey(_+_)
+
+scala> bids_itemtype.collect
+
+
+7) What is the total no of bids per auctions
+
+scala> val bids_auctiontype= auctionRDD.map(x=>(x(auctionid),1)).reduceByKey(_+_)
+
+
+scala> bids_auctiontype.collect
+
+**********
+8) Across all auctioned items what is the maximum no of Bids
+
+
+      import java.lang.Math
+>>>  bids_auctiontype.map(x=>x._2).reduce((x,y)=>Math.max(x,y))
+
+*********
+9) Across all auctioned items what is the minimum no of Bids
+
+>>>>> bids_auctiontype.map(x=>x._2).reduce((x,y)=>Math.min(x,y))
+
+******************************************************************************************************

@@ -1,0 +1,41 @@
+
+*******************************************************
+Install Spark and scala in your system.
+*******************************************************
+--------------
+Install Scala
+--------------
+
+1. wget http://www.scala-lang.org/files/archive/scala-2.10.1.tgz
+
+2. tar xvf scala-2.10.1.tgz
+
+3. sudo mv scala-2.10.1 /usr/lib
+
+4. sudo ln -s /usr/lib/scala-2.10.1 /usr/lib/scala
+
+5. export PATH=$PATH:/usr/lib/scala/bin
+
+scala -version
+
+--------------------
+Install Apache Spark
+--------------------
+1. wget http://d3kbcqa49mib13.cloudfront.net/spark-2.0.0-bin-hadoop2.7.tgz
+
+2. tar xvf spark-2.0.0-bin-hadoop2.7.tgz
+
+3. sudo mkdir /usr/local/spark
+
+4. sudo cp -r spark-2.0.0-bin-hadoop2.7/* /usr/local/spark
+
+5. export SPARK_EXAMPLES_JAR=/usr/local/spark/examples/jars/spark-examples_2.11-2.0.0.jar
+
+6. PATH=$PATH:$PATH:/usr/local/spark/bin
+
+7.  source ~/.bash_profile
+
+8.  spark-shell
+
+
+You are all set with with your system for performaning hands on exercises. Happy Learning !

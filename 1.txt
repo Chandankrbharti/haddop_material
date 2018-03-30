@@ -1,0 +1,152 @@
+scala> 1+4
+res0: Int = 5
+
+scala> 9-2
+res1: Int = 7
+
+scala> 1-2
+res2: Int = -1
+**********************
+Variable Declaration:
+**
+scala> var name:String="manish"
+name: String = manish
+
+scala> var pincode:Int=560078
+pincode: Int = 560078
+
+scala> var course="Spark"
+course: String = Spark
+
+scala> var fee=299
+fee: Int = 299
+
+scala> var fee=700
+fee: Int = 700
+
+scala> val b=99
+b: Int = 99
+
+scala> val b=98
+b: Int = 98
+
+scala> b=101
+<console>:25: error: reassignment to val
+       b=101
+        ^
+
+scala> fee=199
+fee: Int = 199
+
+scala> fee
+res3: Int = 199
+
+
+*************************************************************************
+*************************************************************************
+Multiple Assignment :::::
+
+scala> val(name,age)=Pair("ram",19)
+
+scala> val(name:String,age:Int)= Pair("manish",29)
+warning: there was one deprecation warning; re-run with -deprecation for details
+name: String = manish
+age: Int = 29
+
+scala> val(name,age)= Pair("mani",79)
+warning: there was one deprecation warning; re-run with -deprecation for details
+name: String = mani
+age: Int = 79
+********************************************
+IF ELSE STATEMENT:::::::
+
+scala> println("This is less than 99")
+This is less than 99
+
+scala> if (b<99)
+     | {
+     | println("this is less than 99")
+     | }else
+     | println("This is greter than or equal to 99")
+this is less than 99
+
+***********************
+scala> val c=100
+c: Int = 100
+
+scala> if (c<99)
+     | {
+     | println("This is greter than or equal to 99")
+     | }else
+     | println("This is than or equal to 99")
+This is than or equal to 99
+
+
+*****************************************************************
+scala> var price=12.09
+price: Double = 12.09
+
+scala> var Id=100
+Id: Int = 100
+
+scala> var product="phone"
+product: String = phone
+
+scala> var fs=println("The Product %f with %d of cost %f",product,Id,price)
+(The Product %f with %d of cost %f,phone,100,12.09)
+fs: Unit = ()
+
+***************************************************************
+Concatenation::::
+
+scala> var str1="manish"
+str1: String = manish
+
+scala> var str2="Singh"
+str2: String = Singh
+
+scala> var str=str1+str2
+str: String = manishSingh
+
+************************************************************
+String Builder:::  used to concatenation for strings::::
+
+scala> var builder = StringBuilder.newBuilder
+builder: StringBuilder =
+
+scala> builder.append("Cat")
+res13: StringBuilder = Cat
+
+scala> builder.append("TOM")
+res14: StringBuilder = CatTOM
+
+scala> println(builder)
+CatTOM
+
+
+***********  Scala has method to convert string Buider to string
+
+scala> val result=builder.toString()
+result: String = CatTOM
+
+************************************************************
+scala> val b1=new StringBuilder
+
+scala> b1.append("I Like Spark")
+res16: StringBuilder = I Like Spark
+
+scala>println(b1)
+
+*** Insert this string at Index 1
+
+scala > b1.insert(1,"do not Like")
+scala>println(b1)
+
+**** Replace First Character with a new string 
+scala> b1.replace(0,1,"we")
+
+scala>println(b1)
+*****
+
+scala>b1.append(" I like Scala")
+scala>b1.replace(2,6,"love")

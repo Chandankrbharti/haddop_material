@@ -1,0 +1,255 @@
+//Resilient Distributed Datasets:-
+
+we can create RDD using two ways 
+1.   From Internal CollectionssparkContext.parallelize 
+2. sparkContext.textFile
+
+//Method one :-
+
+scala> val numbers = List(1,2,3,4,5)
+numbers: List[Int] = List(1, 2, 3, 4, 5)
+
+scala> val myrdd = sc.parallelize(numbers)
+rdd: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[0] at parallelize at <console>:26
+>>>> myrdd.count()
+
+
+*********myrdd-> having 8 partitions(default #of cores allocated) launched 8 tasks
+
+>>>>>> myrdd.partitions.length
+
+>>  val myrdd2 = sc.parallelize(num,2)
+**** myrdd2 have 2 partitions -> 2 tasks
+
+>>>>>> myrdd2.partitions.length
+>>>>>> myrdd2.count()
+scala> val namesRdd = sc.parallelize(Seq("joe","john","adom"))
+namesRdd: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[2] at parallelize at <console>:24
+
+scala> val namesRdd = sc.parallelize(Seq("joe","john","adom"),2)
+namesRdd: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[3] at parallelize at <console>:24
+
+scala> namesRdd.foreach(println)
+
+
+
+//Method two:-
+>>>>>>>>>>val data = sc.textFile("/user/cloudera/spark-input/baby-names.csv")
+scala> sc.textFile("/user/cloudera/sparkinput/baby_names.csv")
+
+
+Note :- by default spark will take hadoop as its file system so if you are not mentioning the protocal it will look for hadoop directory.
+if you want to read local file you need to use file:// , for accessing hdfs file hdfs://<host>:<port>/ , for amazon s3 s3:// 
+
+scala> res1.count
+res2: Long = 4
+
+scala> res1.foreach(println)
+siva,sales,30000
+ramu,marketing,34000
+devi,marketing,60000
+john,sales,45000
+
+*************************************************************************************************************
+*************************************************************************************************************
+//using makeRDD method :-
+
+
+scala> sc.makeRDD(1 to 100,3)
+res3: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[5] at makeRDD at <console>:16
+
+
+//functional programming
+
+def printline(line:String){println(line)}
+
+
+scala> sc.textFile("/user/cloudera/sparkinput/emp.csv")
+res1: org.apache.spark.rdd.RDD[String] = /user/emp.csv MapPartitionsRDD[5] at textFile at <console>:25
+
+res1.foreach(printline)
+[Stage 3:>                                                          (0 + 2) / 2]
+devi,marketing,60000
+siva,sales,30000
+ramu,marketing,34000
+john,sales,45000
+
+
+***********************************************************************
+creating sparkcontext
+1)stop the existing 
+2)create a spark configuration(conf)
+   AppName
+   UI port 
+  Master 
+3)create new sparkcontext with conf created
+
+--------------------------
+
+scala> val conf = new SparkConf().setMaster("yarn-client").setAppName("myapp")
+conf: org.apache.spark.SparkConf = org.apache.spark.SparkConf@74c4b691
+
+scala> conf.set("spark.ui.port","4049")
+res16: org.apache.spark.SparkConf = org.apache.spark.SparkConf@74c4b691
+
+scala> val sc = new SparkContext(conf)
+sc: org.apache.spark.SparkContext = org.apache.spark.SparkContext@29f91f3c
+
+scala> val data = sc.textFile("/user/cloudera/sparkinput/baby_names.csv")
+data: org.apache.spark.rdd.RDD[String] = /user/cloudera/sparkinput/baby_names.csv MapPartitionsRDD[1] at textFile at <console>:31
+
+scala> data.partitions.length
+res17: Int = 2
+
+scala> data.count
+res18: Long = 6
+------------------------------------
+
+spark rdd transformations:::::
+*********************************************************************************************
+1)map
+2)flatMap
+3)filter
+4)mapPartitions
+5)mapPartitionsWithIndex
+6)sample
+7)union
+8)intersection
+9)distinct
+10)groupBy
+11)keyBy
+12)Zip
+13)zipwithIndex
+14)Colease
+15)Repartition
+16)sortBy
+/********
+*********************************************************************************************
+map()
+
+a->a*a
+>>>val x = sc.parallelize(List("spark", "rdd", "example",  "sample", "example"), 3)
+x: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[0] at parallelize at <console>:27
+
+scala> val y = x.map(e => (e,1))
+y: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[1] at map at <console>:29
+
+scala> y.collect
+res0: Array[(String, Int)] = Array((spark,1), (rdd,1), (example,1), (sample,1), (example,1))
+
+scala> val y = x.map(e => (1,e))
+y: org.apache.spark.rdd.RDD[(Int, String)] = MapPartitionsRDD[2] at map at <console>:29
+
+scala> y.collect
+res1: Array[(Int, String)] = Array((1,spark), (1,rdd), (1,example), (1,sample), (1,example))
+
+scala> val y = x.map(e => (e,e.length))
+y: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[3] at map at <console>:29
+
+scala> y.collect
+res2: Array[(String, Int)] = Array((spark,5), (rdd,3), (example,7), (sample,6), (example,7))
+
+scala> val y = x.map(e => e.length)
+y: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[4] at map at <console>:29
+
+scala> y.collect
+res3: Array[Int] = Array(5, 3, 7, 6, 7)
+
+scala>
+
+scala> x
+res4: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[0] at parallelize at <console>:27
+
+scala> val y = x.map(e => (e,e.length))
+y: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[5] at map at <console>:29
+
+scala> y.values
+res6: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[6] at values at <console>:32
+
+scala> y.values.collect
+res7: Array[Int] = Array(5, 3, 7, 6, 7)
+
+scala> y.keys.collect
+res8: Array[String] = Array(spark, rdd, example, sample, example)
+
+scala> val data = sc.parallelize(List(1,2,3))
+data: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[9] at parallelize at <console>:27
+
+scala> val data1 = data.flatMap(e=>List(e,e,e))
+data1: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[10] at flatMap at <console>:29
+
+scala> data1.collect
+res9: Array[Int] = Array(1, 1, 1, 2, 2, 2, 3, 3, 3)
+
+
+scala> val data = names.map(e =>(e,e.length))
+data: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[14] at map at <console>:29
+*************************************************************
+FILTER:
+*******
+val x = sc.parallelize(List("spark", "rdd", "example",  "sample", "example"), 3)
+x: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[0] at parallelize at <console>:27
+
+scala> val y = x.map(e => (e,1))
+y: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[1] at map at <console>:29
+
+scala> y.collect
+res0: Array[(String, Int)] = Array((spark,1), (rdd,1), (example,1), (sample,1), (example,1))
+
+
+scala> val data1 = data.filter(_._1.contains("spark"))
+data1: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[15] at filter at <console>:31
+
+scala> data1.collect
+res12: Array[(String, Int)] = Array((Spark,5))
+
+********
+val x = sc.parallelize(List("spark12345", "rdd", "examplesone",  "sampless", "example"), 3)
+val y = x.map(e => (e,e.length))
+
+scala> val data1 = y.filter(_._2 >5)
+data1: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[16] at filter at <console>:31
+
+scala> data1.collect
+res13: Array[(String, Int)] = Array((Hadoop,6), (Mapreduce,9))
+******************
+
+val x = sc.parallelize(List("spark", "rdd", "example",  "sample", "example"), 3)
+val data = names.map(e =>(e,e.length))
+ scala>> val data1 =data.sortByKey()
+data1: org.apache.spark.rdd.RDD[(Int, String)] = ShuffledRDD[20] at sortByKey at <console>:31
+
+scala> data1.collect()
+res16: Array[(Int, String)] = Array((3,pig), (4,hive), (5,Spark), (6,Hadoop), (9,Mapreduce))
+
+scala> data1.filterByRange(3,6).collect
+res17: Array[(Int, String)] = Array((3,pig), (4,hive), (5,Spark), (6,Hadoop))
+
+
+scala> val x = sc.parallelize(List(12,4,1,3,8,7))
+x: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[40] at parallelize at <console>:27
+
+scala> x.collect
+res25: Array[Int] = Array(12, 4, 1, 3, 8, 7)
+
+scala> x.sortBy(e =>e,false).collect
+res26: Array[Int] = Array(12, 8, 7, 4, 3, 1)
+
+scala> x.sortBy(e =>e,true).collect
+res27: Array[Int] = Array(1, 3, 4, 7, 8, 12)
+
+scala> data.collect
+res28: Array[(Int, String)] = Array((5,Spark), (6,Hadoop), (9,Mapreduce), (3,pig), (4,hive))
+
+scala> data.sortByKey().collect
+res29: Array[(Int, String)] = Array((3,pig), (4,hive), (5,Spark), (6,Hadoop), (9,Mapreduce))
+
+scala> data.sortBy(e=>e._2,false).collect
+res30: Array[(Int, String)] = Array((3,pig), (4,hive), (5,Spark), (9,Mapreduce), (6,Hadoop))
+
+scala> data.sortBy(e=>e._2,true).collect
+res31: Array[(Int, String)] = Array((6,Hadoop), (9,Mapreduce), (5,Spark), (4,hive), (3,pig))
+
+scala> data.sortBy(e=>e._1,true).collect
+res32: Array[(Int, String)] = Array((3,pig), (4,hive), (5,Spark), (6,Hadoop), (9,Mapreduce))
+

@@ -1,0 +1,529 @@
+  Open the Terminal::
+  
+   Type::   spark-shell
+   
+   scala >> 
+
+
+   
+   Variable Declaration:::::
+
+   VAl :::   Const .  ::::::::::::  Mutable
+   Var  :::  Varibale  ::::::::::  Immutable
+   
+   
+   
+   
+Loops::::
+
+  Produce List :::
+  >  (1 to 100)
+  
+  scala> var mylist=Array(1,2,3,4,5)
+mylist: Array[Int] = Array(1, 2, 3, 4, 5)
+
+scala> for (i<-mylist){
+     | println(i)
+     | }
+1
+2
+3
+4
+5
+scala> for (i<-0 to (mylist.length-1)){
+     | println(i)
+     | }
+0
+1
+2
+3
+4
+
+*****************************************
+PASTE MODE:::::::::::::::::
+
+ Scala>:paste
+
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+var total=0
+for(element <- (1 to 100))
+total +=element
+
+
+// Exiting paste mode, now interpreting.
+
+total: Int = 5050
+
+***************************
+Sum of Even NO  (1 to 100) ::::
+
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+var total=0
+for(element <- (1 to 100))
+{
+if(element %2 ==0)
+total +=element
+}
+
+// Exiting paste mode, now interpreting.
+
+total: Int = 2550
+
+scala>
+*******************
+  SUm of Even  && Sum of Odd 
+  
+  
+  scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+var totaleven=0
+var totalodd=0
+for(element <- (1 to 100))
+{
+if(element %2 ==0) totaleven +=element else totalodd +=element
+}
+
+// Exiting paste mode, now interpreting.
+
+totaleven: Int = 2550
+totalodd: Int = 2500
+
+scala>
+**************************
+While Loop ::::::::::::::::::::
+
+SUm of Even  && Sum of Odd in list of no 1 to 100
+
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+var lb=1
+var ub=100
+var totaleven=0
+var totalodd=0
+while (lb<=ub){
+if (lb %2 ==0) totaleven +=lb else totalodd +=lb
+lb +=1
+}
+
+// Exiting paste mode, now interpreting.
+
+lb: Int = 101
+ub: Int = 100
+totaleven: Int = 2550
+totalodd: Int = 2500
+
+***********************************************************
+
+Declaration of Function in Scala:::::::::::::::
+
+scala> println("Hello World")
+Hello World
+
+scala> val i=1+2
+i: Int = 3
+
+scala> val i =1.+(2)
+i: Int = 3
+
+scala>
+
+For String:::
+scala> val s="Hello World"
+s: String = Hello World
+
+scala> s.
+*                
+
+scala> s.toUpperCase
+res12: String = HELLO WORLD
+
+scala> s.toL
+toList   toLong   toLowerCase
+
+scala> s.toLowerCase
+res13: String = hello world
+
+scala> s.toList
+res15: List[Char] = List(H, e, l, l, o,  , W, o, r, l, d)
+
+**********
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+def sum(lb:Int,ub:Int)={
+var total =0
+for(element <- lb to ub){
+total +=element
+}
+total
+}
+
+// Exiting paste mode, now interpreting.
+
+sum: (lb: Int, ub: Int)Int
+
+********
+To see syntax of Function:::
+
+scala> sum   ( tab tab)
+   def sum(lb: Int,ub: Int): Int
+   scala> sum (1,10)
+res16: Int = 55
+
+
+
+*************************************
+  Sum of Squares of No from 1 to 100:::
+  
+  
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+def sumofsquare(lb:Int,ub:Int)={
+var total=0
+for(element <- lb to ub){
+total +=element*element
+}
+total
+}
+
+// Exiting paste mode, now interpreting.
+
+sumofsquare: (lb: Int, ub: Int)Int
+
+scala> sumofsquare(1,10)
+res17: Int = 385
+
+************************************
+ CAN we pass Function as an ARGUMENT:::::::::::::
+ 
+ scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+def sum(func:Int => Int, lb:Int,ub:Int)={
+var total=0
+for (element<- lb to ub){
+total +=func(element)
+}
+total
+}
+
+// Exiting paste mode, now interpreting.
+
+sum: (func: Int => Int, lb: Int, ub: Int)Int
+
+scala>
+
+scala> def id(i:Int)=i
+id: (i: Int)Int
+
+scala> sum(id,1,10)
+res18: Int = 55
+
+******************
+scala> def id(i:Int)=i
+id: (i: Int)Int
+
+scala> sum(id,1,10)
+res18: Int = 55
+
+scala> def sqr(i:Int)=i*i
+sqr: (i: Int)Int
+
+scala> def cube(i:Int)=i*i*i
+cube: (i: Int)Int
+
+scala> def double(i:Int)=i*2
+double: (i: Int)Int
+
+scala> sum(sqr,1,10)
+res19: Int = 385
+
+scala> sum(cube,1,10)
+res20: Int = 3025
+
+scala> sum(double,1,10)
+res21: Int = 110
+
+********************************************
+Can we Dynamically Call  sum Function ::::::::::
+scala> sum(i =>i,1,10)
+res22: Int = 55
+
+scala> sum(i => i*i,1,10)
+res23: Int = 385
+
+scala> sum(i=>i*i*i,1,10)
+res24: Int = 3025
+
+scala> sum(i=>i*2,1,10)
+res25: Int = 110
+
+******************************************************
+If No is Even Find Its Square & If it is Odd Do Twice and Find Sum :::::
+scala> sum(i =>{
+     | if (i%2==0) i*i
+     | else
+     | i*2
+     | },1,10)
+res26: Int = 270
+
+**********************************************************
+Ananymous Function::::::
+
+scala> def xyz(i:Int) ={
+     | if (i%2 ==0) i*i
+     | else
+     | i*2
+     | }
+xyz: (i: Int)Int
+
+scala> sum (xyz,1,10)
+res27: Int = 270
+
+
+
+*******************************************************************************************************
+*******************************************************************************************************
+Object Oriented Concepts:::::::::::::::::
+
+*******************************************************************************************************
+
+scala> class order (orderId:Int,orderDate:String,orderCustId:Int,orderStatus:String){
+     | println("I am Inside the Order Constructors")
+     | }
+defined class order
+
+scala>
+scala> :javap -p order
+Compiled from "<console>"
+public class order {
+  public final $iw $outer;
+  public $iw $line64$$read$order$$$outer();
+  public order($iw, int, java.lang.String, int, java.lang.String);
+}
+
+***  How to Create an Object for the Clsss:::
+
+scala> val xorder= new order(1,"2016-02-22 00:00:00.00",100,"COMPLETED")
+I am Inside the Order Constructors
+xorder: order = order@134852d
+
+***********   Define a Function Within Class:::::
+scala> class order (orderId:Int,orderDate:String,orderCustId:Int,orderStatus:String){
+     | println("I am Inside the Order Constructors")
+     | override def toString ="order("+orderId +","+orderDate+","+orderCustId+","+orderStatus+")"
+     | }
+*******
+
+Create Object ::
+scala> val xorder= new order(1,"2016-02-22 00:00:00.00",100,"COMPLETED")
+I am Inside the Order Constructors
+xorder: order = order(1,2016-02-22 00:00:00.00,100,COMPLETED)
+
+
+scala> println(xorder)
+order(1,2016-02-22 00:00:00.00,100,COMPLETED)
+
+
+
+Can we do JAVA P:::
+scala> :javap -p order
+Compiled from "<console>"
+public class order {
+  private final int orderId;
+  private final java.lang.String orderDate;
+  private final int orderCustId;
+  private final java.lang.String orderStatus;
+  public final $iw $outer;
+  public java.lang.String toString();
+  public $iw $line67$$read$order$$$outer();
+  public order($iw, int, java.lang.String, int, java.lang.String);
+}
+
+
+
+
+order.orderId
+<console>:24: error: not found: value order
+       order.orderId
+       ^
+
+::::::::::::::::::
+scala> :paste
+// Entering paste mode (ctrl-D to finish)
+
+class order (val orderId:Int,val orderDate:String,val orderCustId:Int,val orderStatus:String){
+println("I am Inside the Order Constructors")
+override def toString ="order("+orderId +","+orderDate+","+orderCustId+","+orderStatus+")"
+}
+
+// Exiting paste mode, now interpreting.
+
+defined class order
+
+scala>
+
+scala> :javap -p order
+Compiled from "<console>"
+public class order {
+  private final int orderId;
+  private final java.lang.String orderDate;
+  private final int orderCustId;
+  private final java.lang.String orderStatus;
+  public final $iw $outer;
+  public int orderId();
+  public java.lang.String orderDate();
+  public int orderCustId();
+  public java.lang.String orderStatus();
+  public java.lang.String toString();
+  public $iw $line71$$read$order$$$outer();
+  public order($iw, int, java.lang.String, int, java.lang.String);
+}
+
+Create an OBJ:::
+
+scala> val xorder= new order(1,"2016-02-22 00:00:00.00",100,"COMPLETED")
+I am Inside the Order Constructors
+xorder: order = order(1,2016-02-22 00:00:00.00,100,COMPLETED)
+
+scala> xorder.orderId
+res31: Int = 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

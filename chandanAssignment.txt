@@ -1,0 +1,117 @@
+def sum(lb:Int,ub:Int)={
+
+var t=0;
+ for(e <- lb to ub)
+{
+ t=t+e
+
+}
+t=t*t
+}
+
+
+
+
+def sum(func:Int => Int, lb:Int,ub:Int)={
+var total=0
+for (element<- lb to ub){
+total +=func(element)
+}
+total
+}
+
+
+scala> sum(i=> if(i%2==0) i*i else  2*i, 1,100)
+res5: Int = 176700
+
+
+
+
+def sum(lb:Int,ub:Int)={
+var total=0
+var totalo=0
+for (element<- lb to ub)
+{
+ if(element%2==0) 
+ total +=element*element
+ else
+  totalo+=2*element
+
+}
+
+
+ 
+
+
+println(total)
+print(totalo)
+}
+
+hdfs dfs -put ebay.csv /user/chandan 
+scala> var ebayRdd=sc.textFile("/user/chandan/ebay.csv")
+
+scala> ebayRdd.first
+Array[String] = Array(8213034705, 95, 2.927373, jake7870, 0, 95, 117.5, xbox, 3)
+
+scala> ebayRdd.take(5)
+res1: Array[Array[String]] = Array(Array(8213034705, 95, 2.927373, jake7870, 0, 95, 117.5, xbox, 3), Array(8213034705, 115, 2.943484, davidbresler2, 1, 95, 117.5, xbox, 3), Array(8213034705, 100, 2.951285, gladimacowgirl, 58, 95, 117.5, xbox, 3), Array(8213034705, 117.5, 2.998947, daysrus, 10, 95, 117.5, xbox, 3), Array(8213060420, 2, 0.065266, donnie4814, 5, 1, 120, xbox, 3))
+
+scala> println(ebayRdd.count())
+627
+
+
+4)    Create Reference for each Fields ::
+ > val auctionid=0
+
+
+scala> val auctionid=0
+auctionid: Int = 0
+
+scala> val bid=1
+bid: Int = 1
+
+scala> val bidtime=2
+bidtime: Int = 2
+
+scala> val bidder=3
+bidder: Int = 3
+
+scala> val bidrate=4
+bidrate: Int = 4
+
+scala> val openbid=5
+openbid: Int = 5
+
+scala> val price=6
+price: Int = 6
+
+scala> val itemtype=7
+itemtype: Int = 7
+
+scala> val daystolive=8
+daystolive: Int = 8
+
+6) What is the total no of bids per item Type
+
+scala> bids_itemtype.collect
+res3: Array[(String, Int)] = Array((xbox,2784), (palm,5917), (cartier,1953))
+
+
+7) What is the total no of bids per auctions
+
+scala> val bids_auct = ebayRdd.map(x=>(x(auctionid),1)).reduceByKey(_+_)
+bids_auct: org.apache.spark.rdd.RDD[(String, Int)] = ShuffledRDD[16] at reduceByKey at <console>:31
+
+scala> bids_auct.collect
+res5: Array[(String, Int)] = Array((3024504428,1), (3024707992,20), (1650483277,30), (3018904443,24), (1642243766,11), (3024980402,26), (3014835507,27), (3023275213,7), (3024895548,7), (3025035412,1), (3017626592,8), (1649858595,7), (3023748273,42), (8213472092,3), (3014792711,7), (8215125069,19), (3013951754,18), (1640550476,23), (3015958025,20), (3025307344,17), (3014834982,20), (8215582227,16), (3014834745,21), (3016892738,19), (3023389524,16), (8212264580,22), (1642911743,3), (8212236671,43), (3020026227,20), (3021870696,9), (8212145833,26), (1639672910,4), (3025885755,7), (3014616784,23), (1650986455,5), (3018288277,32), (3023187210,11), (3016035790,11), (3024307294,3), (3017950485,20), (3015710025,7), (8214418083,12), (3024799631,18), (8212602164,50), (1640179146,22), (3018131250,...
+scala> 
+
+
+8) Across all auctioned items what is the maximum no of Bids
+scala> bids_auct.map(x=>x._2).reduce((x,y)=>Math.max(x,y))
+res6: Int = 75
+9) Across all auctioned items what is the minimum no of Bids
+scala> bids_auct.map(x=>x._2).reduce((x,y)=>Math.min(x,y))
+res7: Int = 1
+
+
